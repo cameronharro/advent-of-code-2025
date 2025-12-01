@@ -42,3 +42,35 @@ func ParseInput(path string) ([]int, error) {
 	}
 	return result, nil
 }
+
+func PartTwo(nums []int) int {
+	result := 0
+	position := 50
+
+	for _, n := range nums {
+		crossed := 0
+		startingPosition := position
+		position += n
+		if position < 0 {
+			crossed += 1 - (position / 100)
+			if position%100 == 0 {
+				crossed--
+			}
+			position += crossed * 100
+			if startingPosition == 0 {
+				crossed--
+			}
+		} else if position >= 100 {
+			crossed += position / 100
+			position -= crossed * 100
+			if position == 0 {
+				crossed--
+			}
+		}
+		result += crossed
+		if position == 0 {
+			result++
+		}
+	}
+	return result
+}
