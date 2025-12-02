@@ -92,6 +92,7 @@ func PartTwoValidCheck(n int) bool {
 		for j := 1; j < fields; j++ {
 			if currentField != str[j*fieldLength:(j+1)*fieldLength] {
 				matched = false
+				break
 			}
 		}
 		if matched {
