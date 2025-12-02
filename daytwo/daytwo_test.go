@@ -82,8 +82,8 @@ func TestPartOne(t *testing.T) {
 			wantErr: false,
 		},
 	}
-	for _, testCase := range testCases {
-		t.Run(fmt.Sprint(testCase.input), func(t *testing.T) {
+	for i, testCase := range testCases {
+		t.Run(fmt.Sprint(i), func(t *testing.T) {
 			result, err := partOne(testCase.input)
 			if (err != nil) != testCase.wantErr {
 				t.Errorf("PartOne() err %v, wanted %v", err, testCase.wantErr)
@@ -100,6 +100,67 @@ func TestPartOne(t *testing.T) {
 	}
 
 	sum, err := partOne(realInput)
+	if err != nil {
+		t.Error(err.Error())
+	}
+
+	fmt.Println()
+	fmt.Println("Part 1 answer:", sum)
+	fmt.Println()
+}
+
+func TestPartTwo(t *testing.T) {
+	type TestCase struct {
+		number  int
+		matches bool
+	}
+	testCases := []TestCase{
+		{
+			number:  1188511880,
+			matches: false,
+		},
+		{
+			number:  1188511885,
+			matches: true,
+		},
+		{
+			number:  2121212121,
+			matches: true,
+		},
+		{
+			number:  1111111,
+			matches: true,
+		},
+		{
+			number:  12341234,
+			matches: true,
+		},
+		{
+			number:  2121212124,
+			matches: false,
+		},
+		{
+			number:  123123123,
+			matches: true,
+		},
+	}
+
+	for i, testCase := range testCases {
+		t.Run(fmt.Sprint(i), func(t *testing.T) {
+			result := daytwo.PartTwoValidCheck(testCase.number)
+			if result != testCase.matches {
+				t.Errorf("PartTwoValidCheck() got %t, expected %t", result, testCase.matches)
+			}
+		})
+	}
+
+	partTwo := daytwo.Part(daytwo.PartTwoValidCheck)
+	realInput, err := daytwo.ParseInput("./daytwo.txt")
+	if err != nil {
+		t.Error(err.Error())
+	}
+
+	sum, err := partTwo(realInput)
 	if err != nil {
 		t.Error(err.Error())
 	}

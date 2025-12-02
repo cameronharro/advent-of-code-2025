@@ -78,3 +78,25 @@ func PartOneValidCheck(n int) bool {
 	}
 	return false
 }
+
+func PartTwoValidCheck(n int) bool {
+	str := strconv.Itoa(n)
+	for i := 0; i < len(str)/2; i++ {
+		matched := true
+		fieldLength := i + 1
+		if len(str)%fieldLength != 0 {
+			continue
+		}
+		fields := len(str) / fieldLength
+		currentField := str[0:fieldLength]
+		for j := 1; j < fields; j++ {
+			if currentField != str[j*fieldLength:(j+1)*fieldLength] {
+				matched = false
+			}
+		}
+		if matched {
+			return true
+		}
+	}
+	return false
+}
