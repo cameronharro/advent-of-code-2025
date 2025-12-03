@@ -44,7 +44,7 @@ func TestParseInput(t *testing.T) {
 func TestPartOne(t *testing.T) {
 	type TestCase struct {
 		input    []int
-		expected int
+		expected int64
 	}
 	testCases := []TestCase{
 		{
@@ -81,5 +81,48 @@ func TestPartOne(t *testing.T) {
 
 	fmt.Println()
 	fmt.Printf("Part One result: %d\n", daythree.Sum(input, daythree.PartOneJolt))
+	fmt.Println()
+}
+
+func TestPartTwo(t *testing.T) {
+	type TestCase struct {
+		input    []int
+		expected int64
+	}
+	testCases := []TestCase{
+		{
+			input:    []int{9, 8, 7, 6, 5, 4, 3, 2, 1, 1, 1, 1, 1, 1, 1},
+			expected: 987654321111,
+		},
+		{
+			input:    []int{8, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 9},
+			expected: 811111111119,
+		},
+		{
+			input:    []int{2, 3, 4, 2, 3, 4, 2, 3, 4, 2, 3, 4, 2, 7, 8},
+			expected: 434234234278,
+		},
+		{
+			input:    []int{8, 1, 8, 1, 8, 1, 9, 1, 1, 1, 1, 2, 1, 1, 1},
+			expected: 888911112111,
+		},
+	}
+
+	for i, testCase := range testCases {
+		t.Run(fmt.Sprint(i), func(t *testing.T) {
+			result := daythree.PartTwoJolt(testCase.input)
+			if result != testCase.expected {
+				t.Errorf("PartOneJolt() got %d, expected %d", result, testCase.expected)
+			}
+		})
+	}
+
+	input, err := daythree.ParseInput("./daythree.txt")
+	if err != nil {
+		fmt.Println(err.Error())
+	}
+
+	fmt.Println()
+	fmt.Printf("Part Two result: %d\n", daythree.Sum(input, daythree.PartTwoJolt))
 	fmt.Println()
 }
