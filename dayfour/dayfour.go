@@ -44,14 +44,16 @@ func GetSurrounding(point Point, grid [][]string) []string {
 	return result[:validPoints]
 }
 
-func PartOne(grid [][]string) int {
-	result := 0
+func PartOne(grid [][]string) (int, []Point) {
+	countRemovable := 0
+	listRemovable := []Point{}
 	for y, line := range grid {
 		for x, s := range line {
 			if s != "@" {
 				continue
 			}
-			surrounding := GetSurrounding(Point{X: x, Y: y}, grid)
+			point := Point{X: x, Y: y}
+			surrounding := GetSurrounding(point, grid)
 			countRolls := 0
 			for _, char := range surrounding {
 				if char == "@" {
@@ -59,8 +61,26 @@ func PartOne(grid [][]string) int {
 				}
 			}
 			if countRolls < 4 {
-				result++
+				countRemovable++
+				listRemovable = append(listRemovable, point)
 			}
+		}
+	}
+	return countRemovable, listRemovable
+}
+
+func PartTwo(grid [][]string) int {
+	someRemovable := true
+	result := 0
+	for someRemovable {
+		_, listRemovable := PartOne(grid)
+		if len(listRemovable) == 0 {
+			someRemovable = false
+			continue
+		}
+		result += len(listRemovable)
+		for _, point := range listRemovable {
+			grid[point.Y][point.X] = "."
 		}
 	}
 	return result

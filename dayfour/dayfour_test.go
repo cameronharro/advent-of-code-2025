@@ -64,7 +64,7 @@ func TestPartOne(t *testing.T) {
 		t.Error(err.Error())
 	}
 
-	result := dayfour.PartOne(grid)
+	result, _ := dayfour.PartOne(grid)
 	if result != 13 {
 		t.Errorf("PartOne() got %d, expected %d", result, 13)
 	}
@@ -74,7 +74,30 @@ func TestPartOne(t *testing.T) {
 		t.Error(err.Error())
 	}
 
+	result, _ = dayfour.PartOne(grid)
 	fmt.Println()
-	fmt.Printf("Part One result: %d\n", dayfour.PartOne(grid))
+	fmt.Printf("Part One result: %d\n", result)
+	fmt.Println()
+}
+
+func TestPartTwo(t *testing.T) {
+	grid, err := dayfour.ParseInput("./dayfour_test.txt")
+	if err != nil {
+		t.Error(err.Error())
+	}
+
+	result := dayfour.PartTwo(grid)
+	if result != 43 {
+		t.Errorf("PartTwo() got %d, expected %d", result, 43)
+	}
+
+	grid, err = dayfour.ParseInput("./dayfour.txt")
+	if err != nil {
+		t.Error(err.Error())
+	}
+
+	result = dayfour.PartTwo(grid)
+	fmt.Println()
+	fmt.Printf("Part Two result: %d\n", result)
 	fmt.Println()
 }
