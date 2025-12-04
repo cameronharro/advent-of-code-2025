@@ -47,3 +47,25 @@ func GetSurrounding(point Point, grid [][]string) []string {
 
 	return result[:validPoints]
 }
+
+func PartOne(grid [][]string) int {
+	result := 0
+	for y, line := range grid {
+		for x, s := range line {
+			if s != "@" {
+				continue
+			}
+			surrounding := GetSurrounding(Point{X: x, Y: y}, grid)
+			countRolls := 0
+			for _, char := range surrounding {
+				if char == "@" {
+					countRolls++
+				}
+			}
+			if countRolls < 4 {
+				result++
+			}
+		}
+	}
+	return result
+}

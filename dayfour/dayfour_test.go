@@ -57,3 +57,24 @@ func TestGetSurrounding(t *testing.T) {
 		})
 	}
 }
+
+func TestPartOne(t *testing.T) {
+	grid, err := dayfour.ParseInput("./dayfour_test.txt")
+	if err != nil {
+		t.Error(err.Error())
+	}
+
+	result := dayfour.PartOne(grid)
+	if result != 13 {
+		t.Errorf("PartOne() got %d, expected %d", result, 13)
+	}
+
+	grid, err = dayfour.ParseInput("./dayfour.txt")
+	if err != nil {
+		t.Error(err.Error())
+	}
+
+	fmt.Println()
+	fmt.Printf("Part One result: %d\n", dayfour.PartOne(grid))
+	fmt.Println()
+}
