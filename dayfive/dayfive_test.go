@@ -17,9 +17,7 @@ func TestParseInput(t *testing.T) {
 	expected := dayfive.Input{
 		FreshRanges: [][]int64{
 			{3, 5},
-			{10, 14},
-			{16, 20},
-			{12, 18},
+			{10, 20},
 		},
 		Ids: []int64{1, 5, 8, 11, 17, 32},
 	}
@@ -38,9 +36,7 @@ func TestPartOne(t *testing.T) {
 	input := dayfive.Input{
 		FreshRanges: [][]int64{
 			{3, 5},
-			{10, 14},
-			{16, 20},
-			{12, 18},
+			{10, 20},
 		},
 		Ids: []int64{1, 5, 8, 11, 17, 32},
 	}
@@ -58,5 +54,30 @@ func TestPartOne(t *testing.T) {
 	result = dayfive.PartOne(input)
 	fmt.Println()
 	fmt.Printf("Part One result: %d\n", result)
+	fmt.Println()
+}
+
+func TestPartTwo(t *testing.T) {
+	input := dayfive.Input{
+		FreshRanges: [][]int64{
+			{3, 5},
+			{10, 20},
+		},
+		Ids: []int64{1, 5, 8, 11, 17, 32},
+	}
+
+	result := dayfive.PartTwo(input)
+	if result != 14 {
+		t.Errorf("PartTwo() got %d, expected 14", result)
+	}
+
+	input, err := dayfive.ParseInput("./dayfive.txt")
+	if err != nil {
+		t.Error(err.Error())
+	}
+
+	result = dayfive.PartTwo(input)
+	fmt.Println()
+	fmt.Printf("Part Two result: %d\n", result)
 	fmt.Println()
 }
