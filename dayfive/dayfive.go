@@ -52,3 +52,17 @@ func ParseInput(path string) (Input, error) {
 	}
 	return result, nil
 }
+
+func PartOne(input Input) int {
+	result := 0
+	for _, id := range input.Ids {
+		for _, freshRange := range input.FreshRanges {
+			if id < freshRange[0] || id > freshRange[1] {
+				continue
+			}
+			result++
+			break
+		}
+	}
+	return result
+}
