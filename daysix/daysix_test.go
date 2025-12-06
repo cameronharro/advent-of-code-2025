@@ -31,32 +31,32 @@ func TestParseInput(t *testing.T) {
 func TestPartOne(t *testing.T) {
 	type TestCase struct {
 		row      []string
-		expected int
+		expected []int
 	}
 	testCases := []TestCase{
 		{
-			row:      []string{"123", "45", "6", "*"},
-			expected: 33210,
+			row:      []string{"123", "45", "6"},
+			expected: []int{123, 45, 6},
 		},
 		{
-			row:      []string{"328", "64", "98", "+"},
-			expected: 490,
+			row:      []string{"328", "64", "98"},
+			expected: []int{328, 64, 98},
 		},
 		{
-			row:      []string{"51", "387", "215", "*"},
-			expected: 4243455,
+			row:      []string{"51", "387", "215"},
+			expected: []int{51, 387, 215},
 		},
 		{
-			row:      []string{"64", "23", "314", "+"},
-			expected: 401,
+			row:      []string{"64", "23", "314"},
+			expected: []int{64, 23, 314},
 		},
 	}
 
 	for i, testCase := range testCases {
 		t.Run(fmt.Sprint(i), func(t *testing.T) {
 			result := daysix.PartOne(testCase.row)
-			if result != testCase.expected {
-				t.Errorf("PartOne() got %d, expected %d", result, testCase.expected)
+			if !slices.Equal(result, testCase.expected) {
+				t.Errorf("PartOne() got %v, expected %v", result, testCase.expected)
 			}
 		})
 	}

@@ -29,26 +29,19 @@ func ParseInput(path string) ([][]string, error) {
 	return result, nil
 }
 
-func Part(valFunc func(row []string) int) func(input [][]string) int {
+func Part(parseNumbers func(row []string) []int) func(input [][]string) int {
 	return func(input [][]string) int {
 		result := 0
 		for _, row := range input {
-			result += valFunc(row)
+			ns := parseNumbers(row[:len(row)-1])
+			operator := row[len(row)-1]
+			result += pickMath(ns, operator)
 		}
 		return result
 	}
 }
 
-func PartOne(input []string) int {
-	operator := input[len(input)-1]
-	ns := []int{}
-	for _, str := range input {
-		n, err := strconv.Atoi(str)
-		if err != nil {
-			continue
-		}
-		ns = append(ns, n)
-	}
+func pickMath(ns []int, operator string) int {
 	switch operator {
 	case "+":
 		return operateNumbers(ns, func(n1, n2 int) int {
@@ -67,6 +60,18 @@ func operateNumbers(ns []int, mathFunc func(n1, n2 int) int) int {
 	result := ns[0]
 	for _, n := range ns[1:] {
 		result = mathFunc(result, n)
+	}
+	return result
+}
+
+func PartOne(strs []string) []int {
+	result := []int{}
+	for _, str := range strs {
+		n, err := strconv.Atoi(str)
+		if err != nil {
+			continue
+		}
+		result = append(result, n)
 	}
 	return result
 }
