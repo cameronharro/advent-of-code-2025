@@ -40,3 +40,41 @@ func PartOne(grid [][]string) int {
 	}
 	return result
 }
+
+func PartTwo(grid [][]string) int {
+	newGrid := make([][]int, len(grid))
+	for i, row := range grid {
+		newRow := make([]int, len(row))
+		for j, char := range row {
+			switch char {
+			case "S":
+				newRow[j] = 1
+			case "^":
+				newRow[j] = -1
+			default:
+			}
+		}
+		newGrid[i] = newRow
+	}
+
+	result := 0
+	for y, row := range newGrid {
+		for x, n := range row {
+			if y >= len(newGrid)-1 {
+				result += n
+				continue
+			}
+			if n > 0 {
+				below := newGrid[y+1][x]
+				if below != -1 {
+					newGrid[y+1][x] += n
+				} else {
+					newGrid[y+1][x-1] += n
+					newGrid[y+1][x+1] += n
+				}
+			}
+		}
+	}
+
+	return result
+}

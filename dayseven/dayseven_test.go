@@ -62,3 +62,26 @@ func TestPartOne(t *testing.T) {
 	fmt.Printf("Part One answer: %d\n", result)
 	fmt.Println()
 }
+
+func TestPartTwo(t *testing.T) {
+	grid, err := dayseven.ParseInput("./dayseven_test.txt")
+	if err != nil {
+		t.Error(err.Error())
+	}
+
+	result := dayseven.PartTwo(grid)
+	expected := 40
+	if result != expected {
+		t.Errorf("PartTwo got %d, expected %d", result, expected)
+	}
+
+	grid, err = dayseven.ParseInput("./dayseven.txt")
+	if err != nil {
+		t.Error(err.Error())
+	}
+
+	result = dayseven.PartTwo(grid)
+	fmt.Println()
+	fmt.Printf("Part Two answer: %d\n", result)
+	fmt.Println()
+}
