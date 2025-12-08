@@ -1,6 +1,7 @@
 package dayeight_test
 
 import (
+	"fmt"
 	"slices"
 	"testing"
 
@@ -28,4 +29,30 @@ func TestParseInput(t *testing.T) {
 	if !slices.Equal(result[:5], expected) {
 		t.Errorf("ParseInput() got %v, expected %v", result[:5], expected)
 	}
+}
+
+func TestPartOne(t *testing.T) {
+	input, err := dayeight.ParseInput("./dayeight_test.txt")
+	if err != nil {
+		t.Error(err.Error())
+		return
+	}
+
+	expected := 40
+	result := dayeight.PartOne(input, 10)
+	if result != expected {
+		t.Errorf("PartOne() got %d, expected %d", result, expected)
+		return
+	}
+
+	input, err = dayeight.ParseInput("./dayeight.txt")
+	if err != nil {
+		t.Error(err.Error())
+		return
+	}
+
+	result = dayeight.PartOne(input, 1000)
+
+	fmt.Println()
+	fmt.Printf("Part One answer: %d\n", result)
 }
