@@ -55,4 +55,32 @@ func TestPartOne(t *testing.T) {
 
 	fmt.Println()
 	fmt.Printf("Part One answer: %d\n", result)
+	fmt.Println()
+}
+
+func TestPartTwo(t *testing.T) {
+	input, err := dayeight.ParseInput("./dayeight_test.txt")
+	if err != nil {
+		t.Error(err.Error())
+		return
+	}
+
+	expected := 25272
+	result := dayeight.PartTwo(input)
+	if result != expected {
+		t.Errorf("PartTwo() got %d, expected %d", result, expected)
+		return
+	}
+
+	input, err = dayeight.ParseInput("./dayeight.txt")
+	if err != nil {
+		t.Error(err.Error())
+		return
+	}
+
+	result = dayeight.PartTwo(input)
+
+	fmt.Println()
+	fmt.Printf("Part Two answer: %d\n", result)
+	fmt.Println()
 }

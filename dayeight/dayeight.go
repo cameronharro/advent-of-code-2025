@@ -88,29 +88,33 @@ type Circuits map[int][]Point
 
 type PointMembers map[Point]int
 
-func joinPoints(line Line, circuits Circuits, pointMembers PointMembers, nextCircuit int) int {
+func joinPoints(line Line, circuits Circuits, pointMembers PointMembers, nextCircuit int) (int, int) {
 	currentPoint1Member, currentPoint2Member := pointMembers[line.Point1], pointMembers[line.Point2]
+	newCircuitLength := 0
 	if currentPoint1Member == 0 && currentPoint2Member == 0 {
 		circuits[nextCircuit] = []Point{line.Point1, line.Point2}
 		pointMembers[line.Point1] = nextCircuit
 		pointMembers[line.Point2] = nextCircuit
-		return nextCircuit + 1
+		return nextCircuit + 1, 2
 	} else if currentPoint1Member == currentPoint2Member {
-
+		newCircuitLength = len(circuits[currentPoint1Member])
 	} else if currentPoint1Member == 0 {
 		pointMembers[line.Point1] = currentPoint2Member
 		circuits[currentPoint2Member] = append(circuits[currentPoint2Member], line.Point1)
+		newCircuitLength = len(circuits[currentPoint2Member])
 	} else if currentPoint2Member == 0 {
 		pointMembers[line.Point2] = currentPoint1Member
 		circuits[currentPoint1Member] = append(circuits[currentPoint1Member], line.Point2)
+		newCircuitLength = len(circuits[currentPoint1Member])
 	} else {
 		for _, point := range circuits[currentPoint2Member] {
 			pointMembers[point] = currentPoint1Member
 			circuits[currentPoint1Member] = append(circuits[currentPoint1Member], circuits[currentPoint2Member]...)
 			delete(circuits, currentPoint2Member)
+			newCircuitLength = len(circuits[currentPoint1Member])
 		}
 	}
-	return nextCircuit
+	return nextCircuit, newCircuitLength
 }
 
 func getSum(circuits Circuits) int {
@@ -132,9 +136,28 @@ func PartOne(input []Point, numConnections int) int {
 	PointMembers := PointMembers{}
 	nextCircuit := 0
 	for _, line := range shortestLines[:min(len(shortestLines), numConnections)] {
-		nextCircuit = joinPoints(line, circuits, PointMembers, nextCircuit)
+		nextCircuit, _ = joinPoints(line, circuits, PointMembers, nextCircuit)
 		// fmt.Println("circuits:", circuits)
 	}
 
 	return getSum(circuits)
+}
+
+func PartTwo(input []Point) int {
+	shortestLines := getShortestLines(input)
+	targetLength := len(input)
+	circuits := Circuits{}
+	PointMembers := PointMembers{}
+	nextCircuit := 0
+	for _, line := range shortestLines {
+		innerNextCircuit, newCircuitLength := joinPoints(line, circuits, PointMembers, nextCircuit)
+		nextCircuit = innerNextCircuit
+		// fmt.Printf("Connection: %v\n", line)
+		// fmt.Printf("New Circuit Length: %d, target length: %d\n", newCircuitLength, targetLength)
+		// fmt.Println()
+		if newCircuitLength >= targetLength {
+			return line.Point1.X * line.Point2.X
+		}
+	}
+	return 0
 }
