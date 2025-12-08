@@ -107,12 +107,12 @@ func joinPoints(line Line, circuits Circuits, pointMembers PointMembers, nextCir
 		circuits[currentPoint1Member] = append(circuits[currentPoint1Member], line.Point2)
 		newCircuitLength = len(circuits[currentPoint1Member])
 	} else {
+		circuits[currentPoint1Member] = append(circuits[currentPoint1Member], circuits[currentPoint2Member]...)
+		newCircuitLength = len(circuits[currentPoint1Member])
 		for _, point := range circuits[currentPoint2Member] {
 			pointMembers[point] = currentPoint1Member
-			circuits[currentPoint1Member] = append(circuits[currentPoint1Member], circuits[currentPoint2Member]...)
-			delete(circuits, currentPoint2Member)
-			newCircuitLength = len(circuits[currentPoint1Member])
 		}
+		delete(circuits, currentPoint2Member)
 	}
 	return nextCircuit, newCircuitLength
 }
