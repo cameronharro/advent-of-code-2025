@@ -41,7 +41,7 @@ func TestPartOne(t *testing.T) {
 	result := daynine.PartOne(input)
 	expected := 50
 	if result != expected {
-		t.Errorf("PartOne() got %d, expected %d", result, expected)
+		t.Errorf("PartOne() test got %d, expected %d", result, expected)
 		return
 	}
 
@@ -68,7 +68,20 @@ func TestPartTwo(t *testing.T) {
 	result := daynine.PartTwo(input, daynine.Vector{P: daynine.Point{X: 1, Y: 4}, Direction: 1})
 	expected := 24
 	if result != expected {
-		t.Errorf("PartTwo() got %d, expected %d", result, expected)
+		t.Errorf("PartTwo() test got %d, expected %d", result, expected)
+		return
+	}
+
+	input, err = daynine.ParseInput("./daynine_test2.txt")
+	if err != nil {
+		t.Error(err.Error())
+		return
+	}
+
+	result = daynine.PartTwo(input, daynine.Vector{P: daynine.Point{X: 2, Y: 4}, Direction: 1})
+	expected = 66
+	if result != expected {
+		t.Errorf("PartTwo() test 2 got %d, expected %d", result, expected)
 		return
 	}
 
@@ -78,7 +91,15 @@ func TestPartTwo(t *testing.T) {
 		return
 	}
 
-	result = daynine.PartTwo(input, daynine.Vector{P: daynine.Point{X: 1848, Y: 52400}, Direction: 1})
+	result = daynine.PartTwo(input, daynine.Vector{P: daynine.Point{X: 1848, Y: 52341}, Direction: 1})
+	if result <= 102844128 {
+		t.Errorf("PartTwo() got %d, which is too low", result)
+		return
+	}
+	if result >= 4616716962 {
+		t.Errorf("PartTwo() got %d, which is too high", result)
+		return
+	}
 
 	fmt.Println()
 	fmt.Printf("Part Two answer: %d\n", result)
