@@ -57,3 +57,30 @@ func TestPartOne(t *testing.T) {
 	fmt.Printf("Part One answer: %d\n", result)
 	fmt.Println()
 }
+
+func TestPartTwo(t *testing.T) {
+	input, err := daynine.ParseInput("./daynine_test.txt")
+	if err != nil {
+		t.Error(err.Error())
+		return
+	}
+
+	result := daynine.PartTwo(input, daynine.Vector{P: daynine.Point{X: 1, Y: 4}, Direction: 1})
+	expected := 24
+	if result != expected {
+		t.Errorf("PartTwo() got %d, expected %d", result, expected)
+		return
+	}
+
+	input, err = daynine.ParseInput("./daynine.txt")
+	if err != nil {
+		t.Error(err.Error())
+		return
+	}
+
+	result = daynine.PartTwo(input, daynine.Vector{P: daynine.Point{X: 1848, Y: 52400}, Direction: 1})
+
+	fmt.Println()
+	fmt.Printf("Part Two answer: %d\n", result)
+	fmt.Println()
+}
