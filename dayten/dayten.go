@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"os"
 	"regexp"
+	"slices"
 	"strconv"
 	"strings"
 )
@@ -12,9 +13,11 @@ import (
 // true=on, false=off
 type LightSet []bool
 type ButtonSet []int
+type JoltageSpecs []int
 type Machine struct {
 	Lights  LightSet
 	Buttons []ButtonSet
+	Joltage JoltageSpecs
 }
 
 func Map[T, V any](slice []T, mapFunc func(E T) V) []V {
@@ -76,6 +79,19 @@ func ParseInput(path string) ([]Machine, error) {
 		}
 		machine.Buttons = buttons
 
+		// Parse Joltage
+		joltageRe := regexp.MustCompile(`\{([\d,]*)\}`)
+		joltageMatch := joltageRe.FindStringSubmatch(str)
+		if len(joltageMatch) < 2 {
+			return nil, fmt.Errorf("Failed to parse joltage: %s\n", str)
+		}
+
+		joltage := Map(strings.Split(joltageMatch[1], ","), func(e string) int {
+			n, _ := strconv.Atoi(e)
+			return n
+		})
+		machine.Joltage = joltage
+
 		result = append(result, machine)
 	}
 
@@ -122,7 +138,7 @@ func combinationSolvesLights(buttons []ButtonSet, lights LightSet) bool {
 	return true
 }
 
-func solveMachine(machine Machine) int {
+func solveMachineLights(machine Machine) int {
 	buttonCombinations := [][]ButtonSet{}
 	generateCombinations(machine.Buttons, 0, []ButtonSet{}, &buttonCombinations)
 	result := 1000
@@ -139,7 +155,39 @@ func solveMachine(machine Machine) int {
 func PartOne(machines []Machine) int {
 	result := 0
 	for _, machine := range machines {
-		result += solveMachine(machine)
+		result += solveMachineLights(machine)
+	}
+	return result
+}
+
+func combinationSolvesJoltage(buttons []ButtonSet, joltage JoltageSpecs) bool {
+	joltagestate := make([]int, len(joltage))
+	for _, button := range buttons {
+		for i, signal := range button {
+			joltagestate[i] += signal
+		}
+	}
+
+	return slices.Equal(joltagestate, joltage)
+}
+
+func solveMachineJoltage(machine Machine) int {
+	var buttonCombinations [][]ButtonSet
+	result := 1000
+	for _, combination := range buttonCombinations {
+		if combinationSolvesJoltage(combination, machine.Joltage) {
+			if len(combination) < result {
+				result = len(combination)
+			}
+		}
+	}
+	return result
+}
+
+func PartTwo(machines []Machine) int {
+	result := 0
+	for _, machine := range machines {
+		result += solveMachineJoltage(machine)
 	}
 	return result
 }

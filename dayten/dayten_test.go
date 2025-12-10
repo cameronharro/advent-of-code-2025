@@ -8,9 +8,12 @@ import (
 )
 
 func TestParseInput(t *testing.T) {
-	_, err := dayten.ParseInput("./dayten_test.txt")
+	result, err := dayten.ParseInput("./dayten_test.txt")
 	if err != nil {
 		t.Error(err.Error())
+	}
+	for i, machine := range result {
+		fmt.Printf("ParseInput() machine %d: %v\n", i, machine)
 	}
 }
 
