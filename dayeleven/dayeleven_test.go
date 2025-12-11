@@ -2,6 +2,7 @@ package dayeleven_test
 
 import (
 	"fmt"
+	"slices"
 	"testing"
 
 	"github.com/cameronharro/advent-of-code-2025/dayeleven"
@@ -53,10 +54,10 @@ func TestPartTwo(t *testing.T) {
 		return
 	}
 
-	result := dayeleven.PartTwo(input)
-	expected := 2
-	if result != expected {
-		t.Errorf("PartTwo got %d, expected %d\n", result, expected)
+	topoSort := dayeleven.TopologicallySortNodes(input)
+	expected := []string{"svr", "aaa", "bbb", "fft", "tty", "ccc", "ddd", "eee", "hub", "dac", "fff", "ggg", "hhh", "out"}
+	if !slices.Equal(topoSort, expected) {
+		t.Errorf("TopoSort() got %v, expected %v\n", topoSort, expected)
 		return
 	}
 
@@ -66,9 +67,8 @@ func TestPartTwo(t *testing.T) {
 		return
 	}
 
-	// result = dayeleven.PartTwo(input)
-	//
-	// fmt.Println()
-	// fmt.Printf("Part Two answer: %d\n", result)
-	// fmt.Println()
+	topoSort = dayeleven.TopologicallySortNodes(input)
+
+	result := dayeleven.PartTwo(input)
+	fmt.Println(result)
 }

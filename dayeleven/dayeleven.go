@@ -35,49 +35,65 @@ func ParseInput(path string) (Graph, error) {
 	return result, nil
 }
 
-func walkPaths(graph Graph, currentNode string, currentPath []string, result *[][]string) {
-	if currentNode == "out" {
-		temp := make([]string, len(currentPath))
-		copy(temp, currentPath)
-		*result = append(*result, temp)
+func TopologicallySortNodes(graph Graph) []string {
+	queue := []string{}
+	indegrees := map[string]int{}
+	for thisNode, neighbors := range graph {
+		if _, exists := indegrees[thisNode]; !exists {
+			indegrees[thisNode] = 0
+		}
+		for _, neighbor := range neighbors {
+			if _, exists := indegrees[neighbor]; !exists {
+				indegrees[neighbor] = 0
+			}
+			indegrees[neighbor] += 1
+		}
 	}
 
-	for _, nextNode := range graph[currentNode] {
-		if slices.Contains(currentPath, nextNode) {
-			continue
+	for node, indegree := range indegrees {
+		if indegree == 0 {
+			queue = append(queue, node)
+			delete(indegrees, node)
 		}
-		currentPath = append(currentPath, nextNode)
-		walkPaths(graph, nextNode, currentPath, result)
-		currentPath = currentPath[:len(currentPath)-1]
 	}
+
+	result := []string{}
+	for i := 0; i < len(queue); i++ {
+		currentNode := queue[i]
+		for _, neighbor := range graph[currentNode] {
+			if _, exists := indegrees[neighbor]; !exists {
+				result = append(result, neighbor)
+			}
+			indegrees[neighbor] -= 1
+			if indegrees[neighbor] == 0 {
+				queue = append(queue, neighbor)
+				delete(indegrees, neighbor)
+			}
+		}
+		result = append(result, currentNode)
+	}
+	return result
+}
+
+func traverseGraph(graph Graph, order []string, start string) map[string]int {
+	pathsToNode := map[string]int{}
+	startIndex := slices.Index(order, start)
+	pathsToNode[start] = 1
+	for _, node := range order[startIndex:] {
+		for _, neighbor := range graph[node] {
+			pathsToNode[neighbor] += pathsToNode[node]
+		}
+	}
+	return pathsToNode
 }
 
 func PartOne(graph Graph) int {
-	result := [][]string{}
-	walkPaths(graph, "you", []string{"you"}, &result)
-	return len(result)
-}
-
-func walkPathsTwo(graph Graph, currentNode string, currentPath []string, result *[][]string) {
-	if currentNode == "out" && slices.Contains(currentPath, "fft") && slices.Contains(currentPath, "dac") {
-		fmt.Println("Valid Path:", currentPath)
-		temp := make([]string, len(currentPath))
-		copy(temp, currentPath)
-		*result = append(*result, temp)
-	}
-
-	for _, nextNode := range graph[currentNode] {
-		if slices.Contains(currentPath, nextNode) {
-			continue
-		}
-		currentPath = append(currentPath, nextNode)
-		walkPathsTwo(graph, nextNode, currentPath, result)
-		currentPath = currentPath[:len(currentPath)-1]
-	}
+	order := TopologicallySortNodes(graph)
+	paths := traverseGraph(graph, order, "you")
+	return paths["out"]
 }
 
 func PartTwo(graph Graph) int {
-	result := [][]string{}
-	walkPathsTwo(graph, "svr", []string{"svr"}, &result)
-	return len(result)
+	paths := traverseGraph(graph, TopologicallySortNodes(graph), "svr")
+	return paths["out"]
 }
