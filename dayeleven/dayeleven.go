@@ -75,25 +75,60 @@ func TopologicallySortNodes(graph Graph) []string {
 	return result
 }
 
-func traverseGraph(graph Graph, order []string, start string) map[string]int {
-	pathsToNode := map[string]int{}
+type MaskCounts [4]int
+
+const (
+	MaskNone = 0
+	MaskFFT  = 1 << 0
+	MaskDAC  = 1 << 1
+	MaskBoth = MaskFFT | MaskDAC
+)
+
+func traverseGraph(graph Graph, order []string, start string) map[string]MaskCounts {
+	pathsToNode := make(map[string]MaskCounts)
 	startIndex := slices.Index(order, start)
-	pathsToNode[start] = 1
+	pathsToNode[start] = MaskCounts{1, 0, 0, 0}
 	for _, node := range order[startIndex:] {
+		transitionMask := MaskNone
+		if node == "fft" {
+			transitionMask |= MaskFFT
+		}
+		if node == "dac" {
+			transitionMask |= MaskDAC
+		}
+
+		counts := pathsToNode[node]
+		if transitionMask != MaskNone {
+			newCounts := [4]int{}
+			for mask := range 4 {
+				newMask := mask | transitionMask
+				newCounts[newMask] += counts[mask]
+			}
+			counts = newCounts
+			pathsToNode[node] = counts
+		}
+
 		for _, neighbor := range graph[node] {
-			pathsToNode[neighbor] += pathsToNode[node]
+			neighborCounts := pathsToNode[neighbor]
+			for i := range 4 {
+				neighborCounts[i] += counts[i]
+			}
+			pathsToNode[neighbor] = neighborCounts
 		}
 	}
 	return pathsToNode
 }
 
 func PartOne(graph Graph) int {
-	order := TopologicallySortNodes(graph)
-	paths := traverseGraph(graph, order, "you")
-	return paths["out"]
+	paths := traverseGraph(graph, TopologicallySortNodes(graph), "you")
+	result := 0
+	for _, v := range paths["out"] {
+		result += v
+	}
+	return result
 }
 
 func PartTwo(graph Graph) int {
 	paths := traverseGraph(graph, TopologicallySortNodes(graph), "svr")
-	return paths["out"]
+	return paths["out"][3]
 }

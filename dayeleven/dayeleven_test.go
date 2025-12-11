@@ -9,15 +9,15 @@ import (
 )
 
 func TestParseInput(t *testing.T) {
-	input, err := dayeleven.ParseInput("./dayeleven_test.txt")
+	_, err := dayeleven.ParseInput("./dayeleven_test.txt")
 	if err != nil {
 		t.Error(err.Error())
 		return
 	}
 
-	for k, v := range input {
-		fmt.Printf("Node: %s, Options: %v\n", k, v)
-	}
+	// for k, v := range input {
+	// 	fmt.Printf("Node: %s, Options: %v\n", k, v)
+	// }
 }
 
 func TestPartOne(t *testing.T) {
@@ -70,5 +70,7 @@ func TestPartTwo(t *testing.T) {
 	topoSort = dayeleven.TopologicallySortNodes(input)
 
 	result := dayeleven.PartTwo(input)
-	fmt.Println(result)
+	fmt.Println()
+	fmt.Printf("Part Two Answer: %d\n", result)
+	fmt.Println()
 }
