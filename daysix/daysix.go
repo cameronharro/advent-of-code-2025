@@ -44,6 +44,49 @@ func ParseInputOne(path string) ([]Problem, error) {
 	return result, nil
 }
 
+func ParseInputTwo(path string) ([]Problem, error) {
+	data, err := os.ReadFile(path)
+	if err != nil {
+		return nil, err
+	}
+
+	result := []Problem{}
+	lines := strings.Split(strings.Trim(string(data), "\n"), "\n")
+	problem := Problem{}
+	for i := range len(lines[0]) {
+		isBlankColumn := true
+		nStr := ""
+		for _, line := range lines {
+			if len(line) <= i {
+				continue
+			}
+			r := line[i]
+			if r == 42 || r == 43 {
+				problem.Operator = string(r)
+				isBlankColumn = false
+			}
+			if r >= 48 && r <= 57 {
+				nStr += string(r)
+				isBlankColumn = false
+			}
+		}
+
+		if nStr != "" {
+			n, err := strconv.Atoi(nStr)
+			if err != nil {
+				return nil, err
+			}
+			problem.Numbers = append(problem.Numbers, n)
+		}
+
+		if isBlankColumn || i >= len(lines[0])-1 {
+			result = append(result, problem)
+			problem = Problem{}
+		}
+	}
+	return result, nil
+}
+
 func EvalProblems(input []Problem) int {
 	result := 0
 	for _, problem := range input {

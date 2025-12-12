@@ -8,7 +8,7 @@ import (
 	"github.com/cameronharro/advent-of-code-2025/daysix"
 )
 
-func TestParseInput(t *testing.T) {
+func TestParseInputOne(t *testing.T) {
 	result, err := daysix.ParseInputOne("./daysix_test.txt")
 	if err != nil {
 		t.Error(err.Error())
@@ -24,7 +24,27 @@ func TestParseInput(t *testing.T) {
 	if !slices.EqualFunc(result, expected, func(E1, E2 daysix.Problem) bool {
 		return slices.Equal(E1.Numbers, E2.Numbers) && E1.Operator == E2.Operator
 	}) {
-		t.Errorf("ParseInput() got %v, expected %v", result, expected)
+		t.Errorf("ParseInputOne() got %v, expected %v", result, expected)
+	}
+}
+
+func TestParseInputTwo(t *testing.T) {
+	result, err := daysix.ParseInputTwo("./daysix_test.txt")
+	if err != nil {
+		t.Error(err.Error())
+	}
+
+	expected := []daysix.Problem{
+		{[]int{1, 24, 356}, "*"},
+		{[]int{369, 248, 8}, "+"},
+		{[]int{32, 581, 175}, "*"},
+		{[]int{623, 431, 4}, "+"},
+	}
+
+	if !slices.EqualFunc(result, expected, func(E1, E2 daysix.Problem) bool {
+		return slices.Equal(E1.Numbers, E2.Numbers) && E1.Operator == E2.Operator
+	}) {
+		t.Errorf("ParseInputTwo() got %v, expected %v", result, expected)
 	}
 }
 
@@ -81,6 +101,29 @@ func TestPartOne(t *testing.T) {
 
 	fmt.Println()
 	fmt.Printf("Part One Result: %d\n", result)
+	fmt.Println()
+
+}
+
+func TestPartTwo(t *testing.T) {
+	input, err := daysix.ParseInputTwo("./daysix_test.txt")
+	if err != nil {
+		t.Error(err.Error())
+	}
+	result := daysix.EvalProblems(input)
+	expected := 3263827
+	if result != expected {
+		t.Errorf("PartTwo() got %d, expected %d", result, expected)
+	}
+
+	input, err = daysix.ParseInputTwo("./daysix.txt")
+	if err != nil {
+		t.Error(err.Error())
+	}
+	result = daysix.EvalProblems(input)
+
+	fmt.Println()
+	fmt.Printf("Part Two Result: %d\n", result)
 	fmt.Println()
 
 }
