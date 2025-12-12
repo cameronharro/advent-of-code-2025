@@ -72,27 +72,16 @@ type Box struct {
 	P1, P2 Point
 }
 
-func pointInBox(box Box, p Point) bool {
-	top := min(box.P1.Y, box.P2.Y)
-	bottom := max(box.P1.Y, box.P2.Y)
-	left := min(box.P1.X, box.P2.X)
-	right := max(box.P1.X, box.P2.X)
-	return p.Y >= top && p.Y <= bottom && p.X >= left && p.X <= right
-}
-
 func boxesIntersect(box1, box2 Box) bool {
-	for _, p := range []Point{
-		box2.P1,
-		box2.P2,
-		{X: box2.P1.X, Y: box2.P2.Y},
-		{X: box2.P2.X, Y: box2.P1.Y},
-	} {
-		if pointInBox(box1, p) {
-			// fmt.Println("Offending Point:", p)
-			return true
-		}
-	}
-	return false
+	xMin1 := min(box1.P1.X, box1.P2.X)
+	xMax1 := max(box1.P1.X, box1.P2.X)
+	yMin1 := min(box1.P1.Y, box1.P2.Y)
+	yMax1 := max(box1.P1.Y, box1.P2.Y)
+	xMin2 := min(box2.P1.X, box2.P2.X)
+	xMax2 := max(box2.P1.X, box2.P2.X)
+	yMin2 := min(box2.P1.Y, box2.P2.Y)
+	yMax2 := max(box2.P1.Y, box2.P2.Y)
+	return (xMin1 <= xMax2 && xMin2 <= xMax1) && (yMin1 <= yMax2 && yMin2 <= yMax1)
 }
 
 type Boxes map[Box]int
@@ -147,11 +136,6 @@ func walkEdge(vector Vector, edges Edges) Vector {
 		direction = direction % 4
 		pToCheck := nextPoints[direction]
 		_, exists := edges[pToCheck]
-		// fmt.Println("Vector:", vector)
-		// fmt.Println("Direction to check:", direction)
-		// fmt.Println("Point to Check:", pToCheck)
-		// fmt.Println("Exists:", exists)
-		// fmt.Println()
 		if exists {
 			continue
 		}
@@ -165,43 +149,30 @@ func walkEdge(vector Vector, edges Edges) Vector {
 
 func PartTwo(points []Point, initialVectorToWalk Vector) int {
 	boxes, edges := createBoxes(points)
-	fmt.Println("Original count of boxes:", len(boxes))
 	vector := initialVectorToWalk
 	lastCorner := vector
 	for {
 		nextVector := walkEdge(vector, edges)
-		// fmt.Println("Vector:", vector)
 		if nextVector.Direction != vector.Direction {
 			lineToCheck := Box{P1: vector.P, P2: lastCorner.P}
 			for k := range boxes {
-				// fmt.Println(k)
 				if boxesIntersect(k, lineToCheck) {
-					// fmt.Println("nextVector:", nextVector)
-					// fmt.Println("vector:", vector)
-					// fmt.Println("lastCorner:", lastCorner)
-					// fmt.Println()
 					delete(boxes, k)
 				}
 			}
 			lastCorner = nextVector
 		}
 		if nextVector == initialVectorToWalk {
-			fmt.Println("Reached original starting vector:", nextVector)
 			break
 		}
 		vector = nextVector
 	}
 
-	box, result := Box{}, 0
-	for k, v := range boxes {
+	result := 0
+	for _, v := range boxes {
 		if v > result {
 			result = v
-			box = k
 		}
 	}
-	fmt.Println("Count of Remaining Boxes:", len(boxes))
-	fmt.Println("Largest Box:", box)
-	fmt.Println("Area:", result)
-	fmt.Println()
 	return result
 }
