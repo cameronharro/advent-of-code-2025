@@ -9,64 +9,75 @@ import (
 )
 
 func TestParseInput(t *testing.T) {
-	result, err := daysix.ParseInput("./daysix_test.txt")
+	result, err := daysix.ParseInputOne("./daysix_test.txt")
 	if err != nil {
 		t.Error(err.Error())
 	}
 
-	expected := [][]string{
-		{"123", "45", "6", "*"},
-		{"328", "64", "98", "+"},
-		{"51", "387", "215", "*"},
-		{"64", "23", "314", "+"},
+	expected := []daysix.Problem{
+		{[]int{123, 45, 6}, "*"},
+		{[]int{328, 64, 98}, "+"},
+		{[]int{51, 387, 215}, "*"},
+		{[]int{64, 23, 314}, "+"},
 	}
 
-	if !slices.EqualFunc(result, expected, func(E1, E2 []string) bool {
-		return slices.Equal(E1, E2)
+	if !slices.EqualFunc(result, expected, func(E1, E2 daysix.Problem) bool {
+		return slices.Equal(E1.Numbers, E2.Numbers) && E1.Operator == E2.Operator
 	}) {
 		t.Errorf("ParseInput() got %v, expected %v", result, expected)
 	}
 }
 
-func TestPartOne(t *testing.T) {
+func TestSolveProblem(t *testing.T) {
 	type TestCase struct {
-		row      []string
+		row      daysix.Problem
 		expected int
 	}
 	testCases := []TestCase{
 		{
-			row:      []string{"123", "45", "6", "*"},
+			row:      daysix.Problem{[]int{123, 45, 6}, "*"},
 			expected: 33210,
 		},
 		{
-			row:      []string{"328", "64", "98", "+"},
+			row:      daysix.Problem{[]int{328, 64, 98}, "+"},
 			expected: 490,
 		},
 		{
-			row:      []string{"51", "387", "215", "*"},
+			row:      daysix.Problem{[]int{51, 387, 215}, "*"},
 			expected: 4243455,
 		},
 		{
-			row:      []string{"64", "23", "314", "+"},
+			row:      daysix.Problem{[]int{64, 23, 314}, "+"},
 			expected: 401,
 		},
 	}
 
 	for i, testCase := range testCases {
 		t.Run(fmt.Sprint(i), func(t *testing.T) {
-			result := daysix.PartOne(testCase.row)
+			result := daysix.SolveProblem(testCase.row)
 			if result != testCase.expected {
-				t.Errorf("PartOne() got %d, expected %d", result, testCase.expected)
+				t.Errorf("SolveProblem() got %d, expected %d", result, testCase.expected)
 			}
 		})
 	}
+}
 
-	input, err := daysix.ParseInput("./daysix.txt")
+func TestPartOne(t *testing.T) {
+	input, err := daysix.ParseInputOne("./daysix_test.txt")
 	if err != nil {
 		t.Error(err.Error())
 	}
-	partOne := daysix.Part(daysix.PartOne)
-	result := partOne(input)
+	result := daysix.EvalProblems(input)
+	expected := 4277556
+	if result != expected {
+		t.Errorf("PartOne() got %d, expected %d", result, expected)
+	}
+
+	input, err = daysix.ParseInputOne("./daysix.txt")
+	if err != nil {
+		t.Error(err.Error())
+	}
+	result = daysix.EvalProblems(input)
 
 	fmt.Println()
 	fmt.Printf("Part One Result: %d\n", result)

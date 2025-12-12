@@ -7,55 +7,60 @@ import (
 	"strings"
 )
 
-func ParseInput(path string) ([][]string, error) {
+type Problem struct {
+	Numbers  []int
+	Operator string
+}
+
+func ParseInputOne(path string) ([]Problem, error) {
 	data, err := os.ReadFile(path)
 	if err != nil {
-		return [][]string{}, err
+		return nil, err
 	}
 
-	result := [][]string{}
+	result := []Problem{}
 	for line := range strings.SplitSeq(string(data), "\n") {
 		if line == "" {
 			continue
 		}
+
 		for i, str := range strings.Fields(line) {
 			if len(result) <= i {
-				result = append(result, []string{str})
+				result = append(result, Problem{})
+			}
+
+			if str == "*" || str == "+" {
+				result[i].Operator = str
 				continue
 			}
-			result[i] = append(result[i], str)
+
+			n, err := strconv.Atoi(str)
+			if err != nil {
+				return nil, err
+			}
+			result[i].Numbers = append(result[i].Numbers, n)
 		}
 	}
 	return result, nil
 }
 
-func Part(valFunc func(row []string) int) func(input [][]string) int {
-	return func(input [][]string) int {
-		result := 0
-		for _, row := range input {
-			result += valFunc(row)
-		}
-		return result
+func EvalProblems(input []Problem) int {
+	result := 0
+	for _, problem := range input {
+		result += SolveProblem(problem)
 	}
+	return result
 }
 
-func PartOne(input []string) int {
-	operator := input[len(input)-1]
-	ns := []int{}
-	for _, str := range input {
-		n, err := strconv.Atoi(str)
-		if err != nil {
-			continue
-		}
-		ns = append(ns, n)
-	}
+func SolveProblem(problem Problem) int {
+	operator := problem.Operator
 	switch operator {
 	case "+":
-		return operateNumbers(ns, func(n1, n2 int) int {
+		return operateNumbers(problem.Numbers, func(n1, n2 int) int {
 			return n1 + n2
 		})
 	case "*":
-		return operateNumbers(ns, func(n1, n2 int) int {
+		return operateNumbers(problem.Numbers, func(n1, n2 int) int {
 			return n1 * n2
 		})
 	default:
